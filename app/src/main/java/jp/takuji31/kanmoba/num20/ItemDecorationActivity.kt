@@ -59,7 +59,7 @@ class ItemDecorationActivity : AppCompatActivity() {
             if (accessoryType != null) {
                 if (accessoryType != AccessoryType.NONE) {
                     val drawable = ContextCompat.getDrawable(view.context, accessoryType.resId)
-                    outRect.right = drawable.intrinsicWidth + view.context.resources.getDimensionPixelOffset(R.dimen.accessory_horizontal_margin) * 2
+                    outRect.right = drawable.intrinsicWidth + horizontalMargin * 2
                 }
             }
         }
