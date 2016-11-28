@@ -17,6 +17,8 @@
         </activity>
         <activity android:name=".num19.BottomNavigationViewActivity">
         </activity>
+        <activity android:name=".num20.ItemDecorationActivity">
+        </activity>
     </application>
 
 </manifest>

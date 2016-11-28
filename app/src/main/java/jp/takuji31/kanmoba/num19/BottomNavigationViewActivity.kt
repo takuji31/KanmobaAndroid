@@ -20,7 +20,7 @@ class BottomNavigationViewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bottom_navigation_view)
         bottomNavigationView.setOnNavigationItemSelectedListener {
-            textView.text = it.title.toString() + " selected"
+            textView.text = "This is " + it.title.toString()
             true
         }
     }
