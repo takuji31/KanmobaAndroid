@@ -86,7 +86,9 @@ class ExifInterfaceActivity : AppCompatActivity() {
                 ExifInterface.TAG_DATETIME,
                 ExifInterface.TAG_MODEL,
                 ExifInterface.TAG_APERTURE_VALUE,
+                ExifInterface.TAG_F_NUMBER,
                 ExifInterface.TAG_SHUTTER_SPEED_VALUE,
+                ExifInterface.TAG_EXPOSURE_TIME,
                 ExifInterface.TAG_FOCAL_LENGTH,
                 ExifInterface.TAG_ISO_SPEED_RATINGS
         )
