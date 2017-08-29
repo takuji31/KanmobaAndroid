@@ -1,17 +1,26 @@
 package jp.takuji31.kanmoba.num24
 
+import android.app.Activity
+import android.app.Instrumentation
+import android.app.SearchManager
+import android.content.Intent
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import android.support.test.espresso.IdlingRegistry
 import android.support.test.espresso.IdlingResource
 import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.action.ViewActions.swipeDown
+import android.support.test.espresso.intent.Intents.intended
+import android.support.test.espresso.intent.Intents.intending
+import android.support.test.espresso.intent.matcher.IntentMatchers.hasAction
+import android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import android.support.test.espresso.intent.rule.IntentsTestRule
 import android.support.test.espresso.matcher.ViewMatchers.withId
 import android.support.test.espresso.matcher.ViewMatchers.withText
-import android.support.test.rule.ActivityTestRule
 import android.support.v7.widget.RecyclerView
 import jp.takuji31.kanmoba.R
 import jp.takuji31.kanmoba.model.Artist
+import org.hamcrest.Matchers.allOf
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -21,7 +30,7 @@ import org.junit.Test
 class IdlingResourceActivityTest {
     @JvmField
     @Rule
-    val rule : ActivityTestRule<IdlingResourceActivity> = ActivityTestRule(IdlingResourceActivity::class.java, true, true)
+    val rule : IntentsTestRule<IdlingResourceActivity> = IntentsTestRule(IdlingResourceActivity::class.java, true, true)
 
     var initializeIdlingResource : IdlingResource? = null
 
@@ -66,5 +75,15 @@ class IdlingResourceActivityTest {
             assertEquals(recyclerView.adapter.itemCount, Artist.list.size)
 
         }
+    }
+
+    @Test
+    fun testOpenSearchLink() {
+        intending(hasAction(Intent.ACTION_WEB_SEARCH)).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        onView(withText("小倉唯")).perform(click())
+        intended(allOf(
+                hasAction(Intent.ACTION_WEB_SEARCH),
+                hasExtra(SearchManager.QUERY, "小倉唯")
+        ))
     }
 }
