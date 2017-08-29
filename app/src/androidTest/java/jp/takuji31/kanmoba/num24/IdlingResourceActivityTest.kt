@@ -50,7 +50,7 @@ class IdlingResourceActivityTest {
 
     @Test
     fun testInitialize() {
-        onView(withId(R.id.recyclerView)).check { view, noMatchingViewException ->
+        onView(withId(R.id.recyclerView)).check { view, _ ->
             val recyclerView = view as RecyclerView
             assertEquals(recyclerView.childCount, Artist.list.size)
             assertEquals(recyclerView.adapter.itemCount, Artist.list.size)
@@ -69,7 +69,7 @@ class IdlingResourceActivityTest {
 
         onView(withId(R.id.swipeRefreshLayout)).perform(swipeDown())
 
-        onView(withId(R.id.recyclerView)).check { view, noMatchingViewException ->
+        onView(withId(R.id.recyclerView)).check { view, _ ->
             val recyclerView = view as RecyclerView
             assertEquals(recyclerView.childCount, Artist.list.size)
             assertEquals(recyclerView.adapter.itemCount, Artist.list.size)
