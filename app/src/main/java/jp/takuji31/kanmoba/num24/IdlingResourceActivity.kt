@@ -16,7 +16,7 @@ import android.view.ViewGroup
 import jp.takuji31.kanmoba.R
 import jp.takuji31.kanmoba.databinding.ActivityIdlingResourceBinding
 import jp.takuji31.kanmoba.databinding.HasItems
-import jp.takuji31.kanmoba.databinding.RecyclerViewRowBinding
+import jp.takuji31.kanmoba.databinding.RecyclerArtistBinding
 import jp.takuji31.kanmoba.model.Artist
 import jp.takuji31.kanmoba.model.Status
 import jp.takuji31.kanmoba.model.Status.*
@@ -126,10 +126,10 @@ class IdlingResourceActivity : AppCompatActivity() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-                ViewHolder(RecyclerViewRowBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+                ViewHolder(RecyclerArtistBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
         override fun getItemCount(): Int = items.size
 
-        class ViewHolder(val binding: RecyclerViewRowBinding) : RecyclerView.ViewHolder(binding.root)
+        class ViewHolder(val binding: RecyclerArtistBinding) : RecyclerView.ViewHolder(binding.root)
     }
 }
