@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(LayoutInflater.from(parent.context).inflate(android.R.layout.simple_list_item_1, parent, false) as TextView)
+            return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.recyler_row_simple_textview, parent, false) as TextView)
         }
     }
 
