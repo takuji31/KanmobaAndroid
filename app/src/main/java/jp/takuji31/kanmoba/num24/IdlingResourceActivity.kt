@@ -1,5 +1,7 @@
 package jp.takuji31.kanmoba.num24
 
+import android.app.SearchManager
+import android.content.Intent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.annotation.VisibleForTesting
@@ -7,11 +9,14 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.*
-import android.widget.TextView
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.view.ViewGroup
 import jp.takuji31.kanmoba.R
 import jp.takuji31.kanmoba.databinding.ActivityIdlingResourceBinding
 import jp.takuji31.kanmoba.databinding.HasItems
+import jp.takuji31.kanmoba.databinding.RecyclerViewRowBinding
 import jp.takuji31.kanmoba.model.Artist
 import jp.takuji31.kanmoba.model.Status
 import jp.takuji31.kanmoba.model.Status.*
@@ -23,7 +28,7 @@ import kotlin.properties.Delegates
 class IdlingResourceActivity : AppCompatActivity() {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    val viewModel : IdlingResourceViewModel by lazy {
+    val viewModel: IdlingResourceViewModel by lazy {
         IdlingResourceViewModel()
     }
 
@@ -67,20 +72,23 @@ class IdlingResourceActivity : AppCompatActivity() {
     }
 
     class DiffCallback(val oldList: List<Artist>, val newList: List<Artist>) : DiffUtil.Callback() {
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = oldList[oldItemPosition].name == newList[newItemPosition].name
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                oldList[oldItemPosition].name == newList[newItemPosition].name
 
         override fun getOldListSize(): Int = oldList.size
 
         override fun getNewListSize(): Int = newList.size
 
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = oldList[oldItemPosition] == newList[newItemPosition]
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
+                oldList[oldItemPosition] == newList[newItemPosition]
 
-        override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Pair<Status, Status> = Pair(oldList[oldItemPosition].status, newList[newItemPosition].status)
+        override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Pair<Status, Status> =
+                Pair(oldList[oldItemPosition].status, newList[newItemPosition].status)
     }
 
     class Adapter : RecyclerView.Adapter<Adapter.ViewHolder>(), HasItems<List<Artist>> {
 
-        override var items = listOf<Artist>()
+        override var items : List<Artist> = emptyList()
             set(value) {
                 val oldItems = field
                 val diffResult = DiffUtil.calculateDiff(DiffCallback(oldList = oldItems, newList = value), true)
@@ -91,9 +99,13 @@ class IdlingResourceActivity : AppCompatActivity() {
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = items[position]
 
-            holder.nameTextView.text = item.name
-            holder.statusTextView.text = item.status.toDisplayString()
-            holder.itemView.setOnClickListener {
+            holder.binding.artist = item
+            holder.binding.nameTextView.setOnClickListener {
+                val intent = Intent(Intent.ACTION_WEB_SEARCH)
+                intent.putExtra(SearchManager.QUERY, item.name)
+                holder.itemView.context.startActivity(intent)
+            }
+            holder.binding.statusTextView.setOnClickListener {
                 val adapterPosition = holder.adapterPosition
                 val oldItem = items[adapterPosition]
                 val newStatus = when (oldItem.status) {
@@ -106,21 +118,11 @@ class IdlingResourceActivity : AppCompatActivity() {
             }
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val inflater = LayoutInflater.from(parent.context)
-            return ViewHolder(inflater.inflate(R.layout.recycler_view_row, parent, false))
-        }
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
+                ViewHolder(RecyclerViewRowBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
         override fun getItemCount(): Int = items.size
 
-        class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val nameTextView by lazy {
-                itemView.findViewById(R.id.nameTextView) as TextView
-            }
-            val statusTextView by lazy {
-                itemView.findViewById(R.id.statusTextView) as TextView
-            }
-        }
+        class ViewHolder(val binding: RecyclerViewRowBinding) : RecyclerView.ViewHolder(binding.root)
     }
-
 }
