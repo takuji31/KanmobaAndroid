@@ -10,10 +10,16 @@
             type="jp.takuji31.kanmoba.num24.IdlingResourceViewModel" />
     </data>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <android.support.v4.widget.SwipeRefreshLayout
+        app:isRefreshing="@={viewModel.loading}"
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:items="@{viewModel.artists}"
-        />
+        android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:items="@{viewModel.artists}"
+            />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </layout>

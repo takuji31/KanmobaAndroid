@@ -43,10 +43,17 @@ class IdlingResourceActivity : AppCompatActivity() {
         recyclerView.adapter = Adapter()
 
         binding.viewModel = viewModel
+
+        viewModel.onCreate()
+    }
+
+    override fun onDestroy() {
+        viewModel.onDestroy()
+        super.onDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main, menu)
+        menuInflater.inflate(R.menu.idling_resource, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
