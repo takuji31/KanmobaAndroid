@@ -22,10 +22,6 @@ import kotlin.properties.Delegates
  */
 class IdlingResourceActivity : AppCompatActivity() {
 
-    val adapter by lazy {
-        Adapter()
-    }
-
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val viewModel : IdlingResourceViewModel by lazy {
         IdlingResourceViewModel()
@@ -39,7 +35,7 @@ class IdlingResourceActivity : AppCompatActivity() {
 
         val recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
+        recyclerView.adapter = Adapter()
 
         binding.viewModel = viewModel
     }
@@ -52,61 +48,45 @@ class IdlingResourceActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_sort_by_name -> {
-                val newList = adapter.items.sortedBy { it.name }
-                updateItems(items = newList)
+                viewModel.sortByName()
             }
             R.id.action_sort_by_status -> {
-                val newList = adapter.items.sortedByDescending { it.status }
-                updateItems(items = newList)
+                viewModel.sortByStatus()
             }
             R.id.action_reset -> {
-                val newList = Artist.list
-                updateItems(items = newList)
+                viewModel.reset()
             }
             R.id.action_remove_first -> {
-                val newList = adapter.items.drop(1)
-                updateItems(items = newList)
+                viewModel.removeFirst()
             }
             R.id.action_remove_last -> {
-                val newList = adapter.items.dropLast(1)
-                updateItems(items = newList)
+                viewModel.removeLast()
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun updateItems(items : List<Artist>) {
-        val oldItems = adapter.items
-        val diffResult = DiffUtil.calculateDiff(DiffCallback(oldList = oldItems, newList = items), true)
-        adapter.items = items
-        diffResult.dispatchUpdatesTo(adapter)
-    }
-
     class DiffCallback(val oldList: List<Artist>, val newList: List<Artist>) : DiffUtil.Callback() {
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldList[oldItemPosition].name == newList[newItemPosition].name
-        }
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = oldList[oldItemPosition].name == newList[newItemPosition].name
 
-        override fun getOldListSize(): Int {
-            return oldList.size
-        }
+        override fun getOldListSize(): Int = oldList.size
 
-        override fun getNewListSize(): Int {
-            return newList.size
-        }
+        override fun getNewListSize(): Int = newList.size
 
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldList[oldItemPosition] == newList[newItemPosition]
-        }
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean = oldList[oldItemPosition] == newList[newItemPosition]
 
-        override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Pair<Status, Status> {
-            return Pair(oldList[oldItemPosition].status, newList[newItemPosition].status)
-        }
+        override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Pair<Status, Status> = Pair(oldList[oldItemPosition].status, newList[newItemPosition].status)
     }
 
-    class Adapter() : RecyclerView.Adapter<Adapter.ViewHolder>(), HasItems<List<Artist>> {
+    class Adapter : RecyclerView.Adapter<Adapter.ViewHolder>(), HasItems<List<Artist>> {
 
         override var items = listOf<Artist>()
+            set(value) {
+                val oldItems = field
+                val diffResult = DiffUtil.calculateDiff(DiffCallback(oldList = oldItems, newList = value), true)
+                field = value
+                diffResult.dispatchUpdatesTo(this)
+            }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = items[position]
@@ -121,11 +101,8 @@ class IdlingResourceActivity : AppCompatActivity() {
                     LIKE -> LOVE
                     LOVE -> LOVE
                 }
-                val newItem = oldItem.copy(status = newStatus)
-                val newItems = items.take(adapterPosition) + newItem + items.drop(adapterPosition + 1)
-                val diffResult = DiffUtil.calculateDiff(DiffCallback(items, newItems))
-                items = newItems
-                diffResult.dispatchUpdatesTo(this)
+
+                items = items.take(adapterPosition) + oldItem.copy(status = newStatus) + items.drop(adapterPosition + 1)
             }
         }
 
@@ -134,7 +111,7 @@ class IdlingResourceActivity : AppCompatActivity() {
             return ViewHolder(inflater.inflate(R.layout.recycler_view_row, parent, false))
         }
 
-        override fun getItemCount(): Int = items.count()
+        override fun getItemCount(): Int = items.size
 
         class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val nameTextView by lazy {
