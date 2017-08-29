@@ -12,6 +12,7 @@ import android.widget.TextView
 import jp.takuji31.kanmoba.num19.BottomNavigationViewActivity
 import jp.takuji31.kanmoba.num20.ItemDecorationActivity
 import jp.takuji31.kanmoba.num21.ExifInterfaceActivity
+import jp.takuji31.kanmoba.num24.IdlingResourceActivity
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
         Num19(19, LocalDate.of(2016, 10, 26), BottomNavigationViewActivity::class.java),
         Num20(20, LocalDate.of(2016, 11, 28), ItemDecorationActivity::class.java),
         Num21(21, LocalDate.of(2016, 12, 26), ExifInterfaceActivity::class.java),
+        Num24(24, LocalDate.of(2017, 8, 29), IdlingResourceActivity::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
