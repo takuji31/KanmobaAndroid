@@ -100,7 +100,7 @@ class IdlingResourceActivity : AppCompatActivity() {
             val item = items[position]
 
             holder.binding.artist = item
-            holder.binding.nameTextView.setOnClickListener {
+            holder.itemView.setOnClickListener {
                 val intent = Intent(Intent.ACTION_WEB_SEARCH)
                 intent.putExtra(SearchManager.QUERY, item.name)
                 holder.itemView.context.startActivity(intent)
