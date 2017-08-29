@@ -111,7 +111,7 @@ class IdlingResourceActivity : AppCompatActivity() {
                 val newStatus = when (oldItem.status) {
                     INTERESTED -> LIKE
                     LIKE -> LOVE
-                    LOVE -> LOVE
+                    LOVE -> INTERESTED
                 }
 
                 items = items.take(adapterPosition) + oldItem.copy(status = newStatus) + items.drop(adapterPosition + 1)
